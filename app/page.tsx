@@ -72,7 +72,7 @@ function statusMessage(state: ViewState, input: string) {
   return "학번 8자리를 입력한 뒤 조회해 주세요.";
 }
 
-export default function Home() {
+export default function Home({ request = fetch }: { request?: typeof fetch } = {}) {
   const [studentId, setStudentId] = useState("");
   const [view, setView] = useState<ViewState>({ kind: "idle" });
   const [siteDemo, setSiteDemo] = useState(false);
@@ -80,7 +80,7 @@ export default function Home() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/status", { method: "GET" })
+    request("/api/status", { method: "GET" })
       .then(async (response) => {
         if (!response.ok) return;
         const status = (await response.json()) as SiteStatus;
@@ -90,7 +90,7 @@ export default function Home() {
         // A status lookup failure must not block the regular student lookup.
       });
     return () => { active = false; };
-  }, []);
+  }, [request]);
 
   function updateStudentId(value: string) {
     const next = value.replace(/\D/g, "").slice(0, 8);
@@ -110,7 +110,7 @@ export default function Home() {
     const sequence = ++requestSequence.current;
     setView({ kind: "loading" });
     try {
-      const response = await fetch("/api/lookup", {
+      const response = await request("/api/lookup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId: requestedId }),
