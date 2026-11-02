@@ -56,7 +56,7 @@ function formatDate(value: string | null) {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
+    second: localKst && localKst[2].length === 5 ? undefined : "2-digit",
     hourCycle: "h23",
     timeZone: "Asia/Seoul",
   }).format(date);
@@ -265,7 +265,7 @@ export default function Home({ request = fetch }: { request?: typeof fetch } = {
               </article>
             ))}
 
-            <p className="receipt-note">제출 일시는 과제 제출 메일의 수신 시간을 기준으로 합니다.</p>
+            <p className="receipt-note">제출 일시는 확인된 수신 시각입니다. 제출 파일만 확인된 건은 수신 시각을 별도로 표시하지 않습니다.</p>
           </section>
         )}
       </div>
